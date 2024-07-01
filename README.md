@@ -26,7 +26,7 @@ The `Atomic Queue` is a header-only library that supports both static and dynami
 - **Lock-free**: Utilizes atomic operations to ensure synchronization without locks.
 - **Static and Dynamic Allocation**: Supports both static and dynamic memory allocation.
 - **Configurable Alignment**: Allows alignment of queue items for optimal performance.
-- **Power of 2 Optimization**: Optimized for queue sizes that are powers of 2. **NOTE** This optimization is provided by the modern compliers (tested for GCC 5.1, clang 10) that recognize at O1 optimization level that modulo 2^x can be implemented as bitwise AND by (2^x - 1) for unsigned int type.
+- **Power of 2 Optimization**: Optimized for queue sizes that are powers of 2. This optimization is provided by the modern compliers (checked for GCC 5.1, clang 10) that recognize already at -O1 optimization level that modulo 2^x can be implemented as bitwise AND by (2^x - 1) for unsigned int type.
 - **Busy-wait Synchronization**: Suitable for real-time systems where busy-wait is acceptable.
 - **Interrupt Safe**: Can be used within interrupt service routines (ISRs) due to its lock-free nature.
 
@@ -34,7 +34,6 @@ The `Atomic Queue` is a header-only library that supports both static and dynami
 ### Limitations
 
 - Maximum queue length: 65535 items; limitation coming from design decisions.
-- Queue lenght must be power of 2.
 - Tested and designed for minimum C11 ISO/IEC 9899:2011 standard.
 - Tested with GCC 13.2.0 on WSL environment.
 - Requirese `sizeof(unsigned int)` to be at least 4 bytes.
