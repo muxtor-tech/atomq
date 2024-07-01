@@ -57,7 +57,7 @@ Use the provided macro to define a queue for your specific data type:
 // Define a queue for integers with a size of QUEUE_SIZE and alignment of 4 bytes
 #define QUEUE_SIZE 128
 
-DEFINE_FIFO_QUEUE(int, IntQueue, QUEUE_SIZE, 4)
+MUXTOR_TOOLKIT_DEFINE_FIFO_QUEUE(int, IntQueue, QUEUE_SIZE, 4)
 ```
 
 #### Initialize the Queue
@@ -115,7 +115,7 @@ Here is an example of a producer and consumer using the Atomic Queue:
 #define NUM_PRODUCERS 2
 #define NUM_CONSUMERS 2
 
-DEFINE_FIFO_QUEUE(int, IntQueue, QUEUE_SIZE, 4)
+MUXTOR_TOOLKIT_DEFINE_FIFO_QUEUE(int, IntQueue, QUEUE_SIZE, 4)
 
 IntQueue queue;
 IntQueue_StaticBuffer buffer;
