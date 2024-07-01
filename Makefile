@@ -4,7 +4,7 @@ CC = gcc
 
 # Compiler flags
 CXXFLAGS = -O3 -Wall -Wextra -ffunction-sections -std=c++17 -I./ -I./src
-CFLAGS = -O3 -Wall -Wextra -ffunction-sections -std=c11 -I./ -I./src
+CFLAGS = -O3 -Wall -Wextra -ffunction-sections -std=c11 -D_DEFAULT_SOURCE -I./ -I./src
 
 # Source files
 C_SRCS = example/main.c

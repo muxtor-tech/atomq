@@ -9,6 +9,8 @@ typedef unsigned int muxtor_internal_head_tail_t;
 
 // Macro to define a FIFO queue structure, static buffer type, and functions
 #define MUXTOR_TOOLKIT_DEFINE_FIFO_QUEUE(T, Q, SIZE, ALIGN) \
+    static_assert((SIZE & (SIZE - 1)) == 0); /* SIZE MUST BE POWER OF 2 */ \
+    static_assert(SIZE <= 0xFFFF); /* SIZE MUST BE 2^16 OR LESS */ \
     typedef struct { \
         _Atomic muxtor_internal_head_tail_t head_tail; \
         size_t size; \

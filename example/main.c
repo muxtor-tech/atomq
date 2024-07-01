@@ -118,7 +118,7 @@ int main() {
     }
 
     // Set the size of the shared memory object
-    if (ftruncate(shm_fd, sizeof(IntQueue) + sizeof(IntQueue_StaticBuffer)) == -1) {
+    if (ftruncate(shm_fd, (off_t)(sizeof(IntQueue) + sizeof(IntQueue_StaticBuffer))) == -1) {
         perror("ftruncate");
         exit(EXIT_FAILURE);
     }
