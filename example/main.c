@@ -20,7 +20,6 @@
 MUXTOR_TOOLKIT_DEFINE_FIFO_QUEUE(int, IntQueue, QUEUE_SIZE, 4)
 
 IntQueue queue;
-IntQueue_StaticBuffer buffer;
 
 void* producer(void* arg) {
     int id = *(int*)arg;
@@ -70,14 +69,14 @@ void consumer2(IntQueue* queue) {
 
 
 int main() {
-    // Initialize the queue with a static buffer
-    IntQueue_init_static(&queue, &buffer);
+    // Initialize the queue with a dynamic buffer
+    IntQueue_init_dynamic(&queue);
 
     pthread_t producers[NUM_PRODUCERS];
     pthread_t consumers[NUM_CONSUMERS];
     int producer_ids[NUM_PRODUCERS];
 
-    printf("Starting with processing of %ld items with %ld concurrent users.\nStage 1: pthreads\n: .........................................................", (long int)ITEMS_PER_PRODUCER*NUM_PRODUCERS, (long int)NUM_CONSUMERS+NUM_PRODUCERS);
+    printf("Starting with processing of %ld items with %ld concurrent users.\nStage 1: dynamic, pthreads\n: .........................................................", (long int)ITEMS_PER_PRODUCER*NUM_PRODUCERS, (long int)NUM_CONSUMERS+NUM_PRODUCERS);
     fflush(stdout);
 
     // Create producer threads
@@ -101,11 +100,12 @@ int main() {
         pthread_join(consumers[i], NULL);
     }
 
-    // Free the queue resources
-    // IntQueue_free(&queue);
     printf("\nItems left in queue: %s\n", (IntQueue_is_empty(&queue)?"NO":"YES"));
 
-    printf("\nStage 2: processes\n: .........................................................");
+    // Free the queue resources
+    IntQueue_free(&queue);
+
+    printf("\nStage 2: static in shm, processes\n: .........................................................");
     fflush(stdout);
 
     int shm_fd = shm_open("/queue_shm", O_CREAT | O_RDWR, 0666);
@@ -127,6 +127,7 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
+    // initialize the queue with static buffer allocated in the shared memory block
     IntQueue* queue2 = (IntQueue*)shm_ptr;
     IntQueue_StaticBuffer* buffer2 = (IntQueue_StaticBuffer*)(shm_ptr + sizeof(IntQueue));
     IntQueue_init_static(queue2, buffer2);
