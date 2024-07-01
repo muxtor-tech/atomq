@@ -33,6 +33,8 @@ The `Atomic Queue` is a header-only library that supports both static and dynami
 The example code provided can be complied and run on typical Linux development setup using Make and GCC.
 
 ```bash
+git clone https://github.com/muxtor-tech/atomq.git
+cd atomq
 make
 ./atomq
 ```
