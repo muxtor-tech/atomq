@@ -1,25 +1,25 @@
 #ifndef MUXTOR_ATOMIC_QUEUE_H
 #define MUXTOR_ATOMIC_QUEUE_H
 
-#include <assert.h>
-#include <string.h>
 #include <stdatomic.h>
 #include <stdlib.h>
+#include <string.h>
+#include <assert.h>
 
 static_assert(sizeof(unsigned int) >= 4);
 typedef unsigned int muxtor_internal_head_tail_t;
 
-#define MUXTOR_INTERNAL_GET_HEAD(ht) ((ht >> 16) & 0xFFFF)
-#define MUXTOR_INTERNAL_GET_TAIL(ht) (ht & 0xFFFF)
+#define MUXTOR_INTERNAL_GET_HEAD(ht) ((unsigned int)((ht >> 16) & 0xFFFF))
+#define MUXTOR_INTERNAL_GET_TAIL(ht) ((unsigned int)(ht & 0xFFFF))
 #define MUXTOR_INTERNAL_MAKE_HEAD_TAIL(head, tail) (((head & 0xFFFF) << 16) | (tail & 0xFFFF))
+#define MUXTOR_INTERNAL_ADJUST_SIZE_TO_MULTIPLE(size, align) ((size-1) + (align - ((size-1) % align)))
 
 // Macro to define a FIFO queue structure, static buffer type, and functions
 #define MUXTOR_TOOLKIT_DEFINE_FIFO_QUEUE(T, Q, SIZE, ALIGN) \
-    static_assert((SIZE & (SIZE - 1)) == 0); /* SIZE MUST BE POWER OF 2 */ \
     static_assert(SIZE <= 0xFFFF); /* SIZE MUST BE 2^16 OR LESS */ \
+    static_assert(SIZE > 1); /* SIZE MUST BE GREATER THAN 1 */ \
     typedef struct { \
         _Atomic muxtor_internal_head_tail_t head_tail; \
-        size_t size; \
         T* buffer; \
     } Q; \
     \
@@ -29,17 +29,13 @@ typedef unsigned int muxtor_internal_head_tail_t;
     \
     static inline void Q##_init_static(Q* q, Q##_StaticBuffer* buf) { \
         atomic_store(&q->head_tail, 0); \
-        q->size = SIZE; \
         q->buffer = buf->data; \
     } \
     \
-    static inline int Q##_init_dynamic(Q* q, size_t size) { \
-        if ((size & (size - 1)) != 0) { \
-            return -1; /* Size is not a power of 2 */ \
-        } \
+    static inline int Q##_init_dynamic(Q* q) { \
         atomic_store(&q->head_tail, 0); \
-        q->size = size; \
-        q->buffer = (T*)aligned_alloc(ALIGN, sizeof(T) * size); \
+        q->buffer = (T*)aligned_alloc(ALIGN, \
+            MUXTOR_INTERNAL_ADJUST_SIZE_TO_MULTIPLE(sizeof(T) * SIZE, ALIGN)); \
         if (q->buffer == NULL) return -1; \
         return 0; \
     } \
@@ -58,7 +54,7 @@ typedef unsigned int muxtor_internal_head_tail_t;
     \
     static inline int Q##_is_full(Q* q) { \
         muxtor_internal_head_tail_t ht = atomic_load(&q->head_tail); \
-        return ((MUXTOR_INTERNAL_GET_TAIL(ht) + 1) & (q->size - 1)) == MUXTOR_INTERNAL_GET_HEAD(ht); \
+        return ((MUXTOR_INTERNAL_GET_TAIL(ht) + 1) % SIZE) == MUXTOR_INTERNAL_GET_HEAD(ht); \
     } \
     \
     static inline int Q##_enqueue(Q* q, const T* item) { \
@@ -68,7 +64,7 @@ typedef unsigned int muxtor_internal_head_tail_t;
             ht = atomic_load(&q->head_tail); \
             head = MUXTOR_INTERNAL_GET_HEAD(ht); \
             tail = MUXTOR_INTERNAL_GET_TAIL(ht); \
-            next_tail = (tail + 1) & (q->size - 1); \
+            next_tail = (tail + 1) % SIZE; \
             if (next_tail == head) { \
                 return -1; /* Queue is full */ \
             } \
@@ -88,7 +84,7 @@ typedef unsigned int muxtor_internal_head_tail_t;
             if (head == tail) { \
                 return -1; /* Queue is empty */ \
             } \
-            next_head = (head + 1) & (q->size - 1); \
+            next_head = (head + 1) % SIZE; \
             new_ht = MUXTOR_INTERNAL_MAKE_HEAD_TAIL(next_head, tail); \
         } while (!atomic_compare_exchange_weak(&q->head_tail, &ht, new_ht)); \
         memcpy(item, &q->buffer[head], sizeof(T)); \

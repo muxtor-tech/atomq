@@ -9,7 +9,6 @@
 MUXTOR_TOOLKIT_DEFINE_FIFO_QUEUE(int, IntQueue, QUEUE_SIZE, 4)
 
 IntQueue queue;
-IntQueue_StaticBuffer buffer;
 
 void producer(int id) {
     for (int i = 0; i < ITEMS_PER_PRODUCER; ++i) {
@@ -33,7 +32,7 @@ void consumer() {
 
 int main() {
     // Initialize the queue with a static buffer
-    IntQueue_init_static(&queue, &buffer);
+    IntQueue_init_dynamic(&queue);
 
     // Simulate producers and consumers
     producer(0);
@@ -42,7 +41,7 @@ int main() {
     consumer();
 
     // Free the queue resources if dynamically allocated
-    // IntQueue_free(&queue);
+    IntQueue_free(&queue);
 
     return 0;
 }

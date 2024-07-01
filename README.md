@@ -7,16 +7,26 @@ https://github.com/orgs/muxtor-tech/
 This project was in large parts generated using ChatGPT 4o model. While the core concept are authored by humans, implementation was largely done by the model to aid and accelerate the process.
 More details of the chat usage can be found here: https://chatgpt.com/share/1469f088-6e99-4c57-a886-7cd718e11f79
 
-## Atomic Queue
+## Atomic Queue v. 1.1
 
 The `Atomic Queue` is a header-only library that supports both static and dynamic memory allocation. It is optimized for queues with sizes that are powers of 2 and ensures thread/process safety using atomic operations. This makes it suitable for real-time and low-latency applications.
+
+### Version history
+
+#### 1.1
+- Allow for any queue lenght.
+- Confirm compiler optimization for queue sizes being power of 2.
+- Adjust dynamic allocation routine to produce valid allocation size being a integral multiple of alignment
+
+#### 1.0
+- Initial release
 
 ### Features
 
 - **Lock-free**: Utilizes atomic operations to ensure synchronization without locks.
 - **Static and Dynamic Allocation**: Supports both static and dynamic memory allocation.
 - **Configurable Alignment**: Allows alignment of queue items for optimal performance.
-- **Power of 2 Optimization**: Optimized for queue sizes that are powers of 2.
+- **Power of 2 Optimization**: Optimized for queue sizes that are powers of 2. **NOTE** This optimization is provided by the modern compliers (tested for GCC 5.1, clang 10) that recognize at O1 optimization level that modulo 2^x can be implemented as bitwise AND by (2^x - 1) for unsigned int type.
 - **Busy-wait Synchronization**: Suitable for real-time systems where busy-wait is acceptable.
 - **Interrupt Safe**: Can be used within interrupt service routines (ISRs) due to its lock-free nature.
 
@@ -77,9 +87,16 @@ IntQueue_init_static(&queue, &buffer);
 ```c
 IntQueue queue;
 
-if (IntQueue_init_dynamic(&queue, QUEUE_SIZE) != 0) {
+// calls aligned allocation internally, for the declared QUEUE_SIZE
+if (IntQueue_init_dynamic(&queue) != 0) {
     // Handle allocation error
 }
+
+// do some work here
+// ...
+
+// release allocated queue memory
+IntQueue_free(&queue);
 ```
 
 #### Enqueue and Dequeue Operations
@@ -118,7 +135,6 @@ Here is an example of a producer and consumer using the Atomic Queue. This examp
 MUXTOR_TOOLKIT_DEFINE_FIFO_QUEUE(int, IntQueue, QUEUE_SIZE, 4)
 
 IntQueue queue;
-IntQueue_StaticBuffer buffer;
 
 void producer(int id) {
     for (int i = 0; i < ITEMS_PER_PRODUCER; ++i) {
@@ -142,7 +158,7 @@ void consumer() {
 
 int main() {
     // Initialize the queue with a static buffer
-    IntQueue_init_static(&queue, &buffer);
+    IntQueue_init_dynamic(&queue);
 
     // Simulate producers and consumers
     producer(0);
@@ -151,7 +167,7 @@ int main() {
     consumer();
 
     // Free the queue resources if dynamically allocated
-    // IntQueue_free(&queue);
+    IntQueue_free(&queue);
 
     return 0;
 }
@@ -163,7 +179,7 @@ To use the Atomic Queue in a multi-process environment with shared memory:
 - Create and map shared memory using shm_open and mmap.
 - Initialize the queue in the shared memory region.
 - Fork producer and consumer processes.
-- Refer to the example in the full documentation for detailed steps.
+- Refer to the source code of the main example for further information.
 
 ### License
 Muxtor Atomic Queue is released under the MIT License. See LICENSE for details.
