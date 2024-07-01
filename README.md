@@ -24,6 +24,17 @@ The `Atomic Queue` is a header-only library that supports both static and dynami
 ### Limitations
 
 - Maximum queue length: 65535 items; Limitation coming from design decisions
+- Tested and designed for C11 ISO/IEC 9899:2011 standard
+- Tested with GCC 13.2.0 on WSL environment
+
+### Example
+
+The example code provided can be complied and run on typical Linux development setup using Make and GCC.
+
+```bash
+make
+./atomq
+```
 
 ### Usage
 
@@ -150,6 +161,6 @@ To use the Atomic Queue in a multi-process environment with shared memory:
 - Refer to the example in the full documentation for detailed steps.
 
 ### License
-Muxtor is released under the MIT License. See LICENSE for details.
+Muxtor Atomic Queue is released under the MIT License. See LICENSE for details.
 
 This README.md file provides a comprehensive guide on how to use the `Atomic Queue` library in your project. It includes features, usage examples, and initialization steps for both static and dynamic memory allocations.
