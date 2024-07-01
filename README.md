@@ -23,9 +23,10 @@ The `Atomic Queue` is a header-only library that supports both static and dynami
 
 ### Limitations
 
-- Maximum queue length: 65535 items; Limitation coming from design decisions
-- Tested and designed for C11 ISO/IEC 9899:2011 standard
-- Tested with GCC 13.2.0 on WSL environment
+- Maximum queue length: 65535 items; limitation coming from design decisions.
+- Queue lenght must be power of 2.
+- Tested and designed for minimum C11 ISO/IEC 9899:2011 standard.
+- Tested with GCC 13.2.0 on WSL environment.
 
 ### Example
 
