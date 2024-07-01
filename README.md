@@ -27,6 +27,7 @@ The `Atomic Queue` is a header-only library that supports both static and dynami
 - Queue lenght must be power of 2.
 - Tested and designed for minimum C11 ISO/IEC 9899:2011 standard.
 - Tested with GCC 13.2.0 on WSL environment.
+- Requirese `sizeof(unsigned int)` to be at least 4 bytes.
 
 ### Example
 

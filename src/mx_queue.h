@@ -1,6 +1,6 @@
 #include <assert.h>
 
-static_assert(sizeof(unsigned int) == 4);
+static_assert(sizeof(unsigned int) >= 4);
 typedef unsigned int muxtor_internal_head_tail_t;
 
 #define MUXTOR_INTERNAL_GET_HEAD(ht) ((ht >> 16) & 0xFFFF)
