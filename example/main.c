@@ -16,9 +16,6 @@
 #define NUM_PRODUCERS 1000
 #define NUM_CONSUMERS 1000
 
-// Define a type for storing the head and tail in a single 32-bit value
-
-
 // Define a queue for integers with a size of QUEUE_SIZE and alignment of 4 bytes
 MUXTOR_TOOLKIT_DEFINE_FIFO_QUEUE(int, IntQueue, QUEUE_SIZE, 4)
 

@@ -6,6 +6,8 @@
 #include <string.h>
 #include <assert.h>
 
+// Define a type for storing the head and tail in a single 32-bit value
+// validate that the basic integral type covers our design requirements
 static_assert(sizeof(unsigned int) >= 4);
 typedef unsigned int muxtor_internal_head_tail_t;
 
@@ -14,7 +16,8 @@ typedef unsigned int muxtor_internal_head_tail_t;
 #define MUXTOR_INTERNAL_MAKE_HEAD_TAIL(head, tail) (((head & 0xFFFF) << 16) | (tail & 0xFFFF))
 #define MUXTOR_INTERNAL_ADJUST_SIZE_TO_MULTIPLE(size, align) ((size-1) + (align - ((size-1) % align)))
 
-// Macro to define a FIFO queue structure, static buffer type, and functions
+// Macro to define a FIFO queue structure, static buffer type, and functions,
+// with static validation of the provided parameters
 #define MUXTOR_TOOLKIT_DEFINE_FIFO_QUEUE(T, Q, SIZE, ALIGN) \
     static_assert(SIZE <= 0xFFFF); /* SIZE MUST BE 2^16 OR LESS */ \
     static_assert(SIZE > 1); /* SIZE MUST BE GREATER THAN 1 */ \
