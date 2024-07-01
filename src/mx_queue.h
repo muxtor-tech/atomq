@@ -1,3 +1,6 @@
+#ifndef MUXTOR_ATOMIC_QUEUE_H
+#define MUXTOR_ATOMIC_QUEUE_H
+
 #include <assert.h>
 #include <string.h>
 #include <stdatomic.h>
@@ -91,3 +94,5 @@ typedef unsigned int muxtor_internal_head_tail_t;
         memcpy(item, &q->buffer[head], sizeof(T)); \
         return 0; \
     }
+
+#endif
