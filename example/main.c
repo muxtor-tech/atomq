@@ -11,10 +11,10 @@
 #include <sys/wait.h>
 #include <mx_queue.h>
 
-#define QUEUE_SIZE 256
+#define QUEUE_SIZE 16384
 #define ITEMS_PER_PRODUCER 10000
-#define NUM_PRODUCERS 200
-#define NUM_CONSUMERS 200
+#define NUM_PRODUCERS 1000
+#define NUM_CONSUMERS 1000
 
 // Define a type for storing the head and tail in a single 32-bit value
 
