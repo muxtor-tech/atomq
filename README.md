@@ -51,6 +51,7 @@ First, include the `mx_queue.h` header in your project:
 Use the provided macro to define a queue for your specific data type:
 
 ```c
+// Define a queue for integers with a size of QUEUE_SIZE and alignment of 4 bytes
 #define QUEUE_SIZE 128
 
 DEFINE_FIFO_QUEUE(int, IntQueue, QUEUE_SIZE, 4)
