@@ -1,4 +1,7 @@
 #include <assert.h>
+#include <string.h>
+#include <stdatomic.h>
+#include <stdlib.h>
 
 static_assert(sizeof(unsigned int) >= 4);
 typedef unsigned int muxtor_internal_head_tail_t;

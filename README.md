@@ -104,13 +104,13 @@ if (IntQueue_dequeue(&queue, &item) != 0) {
 ```
 
 #### Example Usage
-Here is an example of a producer and consumer using the Atomic Queue:
+Here is an example of a producer and consumer using the Atomic Queue. This example is also found in the `examples` folder in the `readme.c` file.
 
 ```c
 #include "mx_queue.h"
 #include <stdio.h>
 
-#define QUEUE_SIZE 128
+#define QUEUE_SIZE 256
 #define ITEMS_PER_PRODUCER 100
 #define NUM_PRODUCERS 2
 #define NUM_CONSUMERS 2
